@@ -16,6 +16,12 @@ class PrintJob(Base):
 
     product: Mapped["Product"] = relationship(back_populates="print_jobs")
 
+    quantity: Mapped[int] = mapped_column(
+        Integer,
+        default=0,
+        nullable=False,
+    )
+
     status: Mapped[PrintJobState] = mapped_column(
         Enum(PrintJobState),
         default=PrintJobState.PENDING,

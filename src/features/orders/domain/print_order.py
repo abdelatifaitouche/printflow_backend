@@ -11,19 +11,16 @@ class PrintOrder:
     status: PrintOrderState
 
     @classmethod
-    def create(cls, print_jobs: list[PrintJob]) -> "PrintOrder":
-
-        if len(print_jobs) == 0:
-            raise ValueError(
-                "An Order cannot be empty",
-            )
-
+    def create(cls) -> "PrintOrder":
         order = cls(
             id=uuid4(),
-            print_jobs=print_jobs,
+            print_jobs=[],
             status=PrintOrderState.PENDING,
         )
         return order
+
+    def add_jobs(self, jobs: list[PrintJob]):
+        self.print_jobs = jobs
 
     @property
     def total_price(self):

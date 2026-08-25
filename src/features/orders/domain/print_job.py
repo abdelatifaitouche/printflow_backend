@@ -6,13 +6,13 @@ from src.features.orders.domain.print_job_states import PrintJobState
 @dataclass
 class PrintJob:
     id: UUID
-    product: str
+    product_id: UUID
     quantity: int
     status: PrintJobState
     print_order_id: UUID
 
     @classmethod
-    def create(cls, product: str, quantity: int, print_order_id: UUID):
+    def create(cls, product_id: UUID, quantity: int, print_order_id: UUID):
 
         if not quantity or quantity <= 0:
             raise ValueError(
@@ -21,10 +21,10 @@ class PrintJob:
 
         return cls(
             id=uuid4(),
-            product=product,
+            product_id=product_id,
             quantity=quantity,
             print_order_id=print_order_id,
-            status=PrintJobState.WAIT_FOR_PRINTING,
+            status=PrintJobState.PENDING,
         )
 
     @property

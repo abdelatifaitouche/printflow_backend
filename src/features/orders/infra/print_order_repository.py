@@ -1,11 +1,11 @@
 from abc import ABC, abstractmethod
 
 
-class PrintOrderRepository(ABC):
+class IPrintOrderRepository(ABC):
     @abstractmethod
-    def save(self, *args, **kwargs):
+    async def save(self, *args, **kwargs):
         raise NotImplementedError()
 
     @abstractmethod
-    def get(self, *args, **kwargs):
+    async def get(self, *args, **kwargs):
         raise NotImplementedError()
