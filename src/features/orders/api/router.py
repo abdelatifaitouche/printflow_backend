@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends
+from uuid import UUID
 from src.features.orders.api.dependencies.dependencies import get_uc
 from src.features.orders.application.print_order_uc import PrintOrderUC
 from src.features.orders.api.commands.write_commands import CreateOrderCommand
@@ -30,5 +31,8 @@ async def list_orders():
 
 
 @router.patch("/{order_id}/confirm")
-async def confirm_order():
-    return
+async def confirm_order(
+    order_id: UUID,
+    uc: PrintOrderUC = Depends(get_uc),
+):
+    return await uc.confirm_order(order_id)

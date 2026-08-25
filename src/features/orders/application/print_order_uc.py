@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from src.features.orders.domain.print_order import PrintOrder
 from src.features.orders.domain.print_job import PrintJob
 from src.features.orders.application.dtos.print_order import PrintOrderDTO, PrintJobDTO
@@ -26,3 +28,17 @@ class PrintOrderUC:
 
             print_order = await self.print_order_repository.save(print_order)
         return print_order
+
+    async def confirm_order(self, order_id: UUID):
+        async with self.uow:
+            order: PrintOrder | None = await self.print_order_repository.get(order_id)
+
+            if not order:
+                raise ValueError(
+                    "No Order found",
+                )
+
+            order.confirm_order()
+
+            order = await self.print_order_repository.save(order)
+        return order
