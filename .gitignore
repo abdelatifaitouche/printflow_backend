@@ -10,3 +10,4 @@ wheels/
 .venv
 .env
 test_db.db/*
+drive_api_secret.json
