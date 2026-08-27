@@ -4,7 +4,6 @@ from src.api.routes import router as api
 from src.infra.db.models import *
 from src.infra.db.engine import engine
 from contextlib import asynccontextmanager
-from src.infra.storage.google_drive_client import GoogleDriveClient
 
 
 @asynccontextmanager
@@ -16,10 +15,6 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="Printflow", lifespan=lifespan)
 
 app.include_router(api)
-
-google = GoogleDriveClient()
-
-folder = google.create_folder("axentis")
 
 
 @app.get("/health")

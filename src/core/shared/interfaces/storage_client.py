@@ -7,3 +7,6 @@ class IStorageClient(ABC):
 
     def download(self, *args, **kwargs):
         pass
+
+    def generate_signed_url(self, *args, **kwargs):
+        raise NotImplementedError()

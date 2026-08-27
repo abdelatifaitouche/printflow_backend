@@ -1,4 +1,6 @@
 from pathlib import Path
+import requests
+from google.auth.transport.requests import Request
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from src.core.shared.interfaces.storage_client import IStorageClient
@@ -22,7 +24,7 @@ class GoogleDriveClient(IStorageClient):
         self.parent_folder: str = "1wRsXYJ3BzyiZJkL6YwlZ1X1i5zgDweGK"
         self._is_instantiated = True
 
-    def _auth(self):
+    def _get_creds(self):
         BASE_DIR = Path(__file__).resolve().parents[3]
         SERVICE_ACCOUNT_FILE = BASE_DIR / "drive_api_secret.json"
 
@@ -32,6 +34,10 @@ class GoogleDriveClient(IStorageClient):
             filename=SERVICE_ACCOUNT_FILE, scopes=SCOPES
         )
 
+        return creds
+
+    def _auth(self):
+        creds = self._get_creds()
         return build(
             "drive",
             "v3",
@@ -44,8 +50,47 @@ class GoogleDriveClient(IStorageClient):
     def download(self):
         pass
 
-    def generate_signed_url(self):
-        pass
+    def generate_signed_url(
+        self,
+        file_name: str,
+        mime_type: str,
+        parent_folder_id: str | None = None,
+    ):
+        try:
+            creds = self._get_creds()
+            creds.refresh(Request())
+            access_token = creds.token
+
+            url = (
+                "https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable"
+            )
+
+            headers = {
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json; charset=UTF-8",
+                "X-Upload-Content-Type": mime_type,
+            }
+
+            metadata: dict[str, Any] = {
+                "name": file_name,
+            }
+
+            if parent_folder_id is None:
+                metadata["parents"] = [self.parent_folder]
+
+            response = requests.post(
+                url,
+                headers=headers,
+                json=metadata,
+            )
+
+            response.raise_for_status()
+
+            upload_session_url = response.headers.get("Location")
+
+            return upload_session_url
+        except Exception as e:
+            raise e
 
     def create_folder(
         self,
