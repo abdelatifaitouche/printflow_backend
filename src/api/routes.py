@@ -3,9 +3,12 @@ from src.features.product_catalogue.api.router import router as product_catalgou
 from src.features.orders.api.router import router as order_router
 from src.features.storage.api.router import router as document_router
 from src.features.crm.api.router import router as crm_router
+from src.features.identity.api.router import router as auth_router
 
 router = APIRouter(prefix="/api/v1")
 
+
+router.include_router(auth_router)
 router.include_router(order_router)
 router.include_router(document_router)
 router.include_router(crm_router)

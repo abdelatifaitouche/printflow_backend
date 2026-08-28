@@ -15,8 +15,7 @@ services:
       db:
         condition: service_healthy
     volumes:
-      - ./main.py:/app/main.py
-      - ./src:/app/src
+      - .:/app
     networks:
       - app_network
 
@@ -44,7 +43,6 @@ services:
 
 volumes:
   postgres_data:
-
 networks:
   app_network:
     driver: bridge
